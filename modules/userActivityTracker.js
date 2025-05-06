@@ -1,14 +1,30 @@
 // userActivityTracker.js
-const { readFileSync, writeFileSync } = require('fs');
+const { readFileSync, writeFileSync, existsSync, mkdirSync } = require('fs');
+const path = require('path');
 
-const userActivityDataPath = ('./.private/userActivityData.json');
+const userActivityDataPath = path.join(__dirname, '..', '.private', 'userActivityData.json');
+const privateDirPath = path.join(__dirname, '..', '.private');
 let userActivity = new Map();
+
+// Create the .private directory if it doesn't exist
+if (!existsSync(privateDirPath)) {
+    mkdirSync(privateDirPath, { recursive: true });
+}
+
+// Create the userActivityData.json file if it doesn't exist
+if (!existsSync(userActivityDataPath)) {
+    writeFileSync(userActivityDataPath, JSON.stringify({}, null, 2), 'utf8');
+    console.log(`Created ${userActivityDataPath}`);
+}
+
 try {
     const userActivityData = readFileSync(userActivityDataPath, 'utf8');
     const parsedUserActivityData = JSON.parse(userActivityData);
     userActivity = new Map(Object.entries(parsedUserActivityData).map(([guildId, guildData]) => [guildId, new Map(Object.entries(guildData))]));
 } catch (error) {
-    console.error(error);
+    console.error("Error reading or parsing user activity data:", error);
+    // If there's an error during read or parse, userActivity will remain an empty Map,
+    // and the saveData function will create a new file with an empty object.
 }
 
 const saveData = () => {

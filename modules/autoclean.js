@@ -1,9 +1,23 @@
 // autoclean.js
-const { existsSync, readFileSync } = require('fs');
+const { existsSync, readFileSync, writeFileSync, mkdirSync } = require('fs');
+const path = require('path');
 const purgeMessages = require('./purgeMessages');
 
 module.exports = async function runAutoClean(client) {
-    const autocleansfile = '.private/autocleanChannels.json';
+    const privateDirPath = path.join(__dirname, '..', '.private');
+    const autocleansfile = path.join(privateDirPath, 'autocleanChannels.json');
+
+    // Create the .private directory if it doesn't exist
+    if (!existsSync(privateDirPath)) {
+        mkdirSync(privateDirPath, { recursive: true });
+    }
+
+    // Create the autocleanChannels.json file if it doesn't exist
+    if (!existsSync(autocleansfile)) {
+        writeFileSync(autocleansfile, JSON.stringify({}, null, 2), 'utf8');
+        console.log(`Created ${autocleansfile}`);
+    }
+
     try {
         if (existsSync(autocleansfile)) {
             const data = readFileSync(autocleansfile, 'utf8');
