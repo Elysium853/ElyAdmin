@@ -57,7 +57,7 @@ node modules/deploy-commands.js
 /set-userlevels-channel: <Channel>
 ```
 ## Install Service
-- Follow the instructions in the ElyAdmin.service file to install the bot as a service
+- Follow the instructions in the ElyAdmin-sample.service file to install the bot as a service
 ## Node (if node isn't installed)
 ```
 cd ~
