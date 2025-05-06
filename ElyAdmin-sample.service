@@ -1,0 +1,37 @@
+## mv ElyAdmin-sample.service ElyAdmin.service
+## Update: WorkingDirectory=/home/ubuntu/Repos/ElyAdmin
+## Update: Environment=PATH=/usr/bin:/usr/local/bin
+## Update: ExecStart=/usr/bin/node /home/ubuntu/Repos/ElyAdmin/index.js
+## Update: Group=ubuntu
+## Update: User=ubuntu
+## Update: StandardOutput=append:/home/ubuntu/Repos/ElyAdmin/.logs/service.log
+## Update: StandardError=append:/home/ubuntu/Repos/ElyAdmin/.logs/service_error.log
+##
+## sudo cp ElyAdmin.service /etc/systemd/system/
+## sudo systemctl daemon-reload
+## sudo systemctl enable ElyAdmin.service
+## sudo systemctl start ElyAdmin.service
+##
+## /etc/systemd/system/ElyAdmin.service
+## sudo systemctl stop ElyAdmin.service
+## sudo systemctl restart ElyAdmin.service
+[Unit]
+Description=ElyAdmin daemon
+After=network.target
+After=syslog.target
+Wants=network-online.target
+
+[Service]
+Restart=always
+WorkingDirectory=/home/ubuntu/Repos/ElyAdmin
+Environment=PATH=/usr/bin:/usr/local/bin
+Environment=NODE_ENV=production
+ExecStart=/usr/bin/node /home/ubuntu/Repos/ElyAdmin/index.js
+ExecStop=pskill -9 npm; pskill -9 node
+Group=ubuntu
+User=ubuntu
+StandardOutput=append:/home/ubuntu/Repos/ElyAdmin/.logs/service.log
+StandardError=append:/home/ubuntu/Repos/ElyAdmin/.logs/service_error.log
+
+[Install]
+WantedBy=multi-user.target
